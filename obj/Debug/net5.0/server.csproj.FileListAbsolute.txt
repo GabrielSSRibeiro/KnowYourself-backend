@@ -54,3 +54,5 @@
 /Users/gabrielribeiro/Documents/GitHub/TestProject/server/bin/Debug/net5.0/runtimes/win-arm64/native/e_sqlite3.dll
 /Users/gabrielribeiro/Documents/GitHub/TestProject/server/bin/Debug/net5.0/runtimes/win-x64/native/e_sqlite3.dll
 /Users/gabrielribeiro/Documents/GitHub/TestProject/server/bin/Debug/net5.0/runtimes/win-x86/native/e_sqlite3.dll
+/Users/gabrielribeiro/Documents/GitHub/TestProject/server/bin/Debug/net5.0/dotnet-ef.dll
+/Users/gabrielribeiro/Documents/GitHub/TestProject/server/bin/Debug/net5.0/Newtonsoft.Json.dll
