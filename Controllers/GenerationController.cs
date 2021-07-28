@@ -3,31 +3,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Models;
-using System;
 
 namespace server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TodoController : ControllerBase
+    public class GenerationController : ControllerBase
     {
-
         private readonly ApiDbContext _context;
 
-        public TodoController(ApiDbContext context){
+        public GenerationController(ApiDbContext context){
             _context = context;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetItems(){
-            var items = await _context.Items.ToListAsync();
+            var items = await _context.Generations.ToListAsync();
             
             return Ok(items);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetItem(int id){
-            var item = await _context.Items.FirstOrDefaultAsync(item => item.Id == id);
+            var item = await _context.Generations.FirstOrDefaultAsync(item => item.Id == id);
 
             if(item == null){
                 return NotFound();
@@ -37,9 +35,9 @@ namespace server.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateItem(ItemData data){
+        public async Task<IActionResult> CreateItem(GenerationData data){
             if(ModelState.IsValid){
-                await _context.Items.AddAsync(data);
+                await _context.Generations.AddAsync(data);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction("GetItem", new {data.Id}, data);
@@ -49,20 +47,21 @@ namespace server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItem(int id, ItemData newItem){
+        public async Task<IActionResult> UpdateItem(int id, GenerationData newItem){
             if(id != newItem.Id){
                 return BadRequest();
             }
 
-            var existItem = await _context.Items.FirstOrDefaultAsync(item => item.Id == id);
+            var existItem = await _context.Generations.FirstOrDefaultAsync(item => item.Id == id);
 
             if(existItem == null){
                 return NotFound();
             }
 
-            existItem.Title = newItem.Title;
+            existItem.Name = newItem.Name;
             existItem.Description = newItem.Description;
-            existItem.Done = newItem.Done;
+            existItem.MinYear = newItem.MinYear;
+            existItem.MaxYear = newItem.MaxYear;
 
             await _context.SaveChangesAsync();
 
@@ -71,13 +70,13 @@ namespace server.Controllers
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id){
-            var existItem = await _context.Items.FirstOrDefaultAsync(item => item.Id == id);
+            var existItem = await _context.Generations.FirstOrDefaultAsync(item => item.Id == id);
 
             if(existItem == null){
                 return NotFound();
             }
 
-            _context.Items.Remove(existItem);
+            _context.Generations.Remove(existItem);
             await _context.SaveChangesAsync();
 
             return Ok(existItem);
