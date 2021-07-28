@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Models;
+using System;
 
 namespace server.Controllers
 {
@@ -24,6 +25,17 @@ namespace server.Controllers
             return Ok(items);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetItem(int id){
+            var item = await _context.Items.FirstOrDefaultAsync(item => item.Id == id);
+
+            if(item == null){
+                return NotFound();
+            }
+
+            return Ok(item);
+        }
+        
         [HttpPost]
         public async Task<IActionResult> CreateItem(ItemData data){
             if(ModelState.IsValid){
@@ -36,15 +48,39 @@ namespace server.Controllers
             return new JsonResult("Something went wrong") {StatusCode = 500};
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetItem(int id){
-            var item = await _context.Items.FirstOrDefaultAsync(x => x.Id == id);
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateItem(int id, ItemData newItem){
+            if(id != newItem.Id){
+                return BadRequest();
+            }
 
-            if(item == null){
+            var existItem = await _context.Items.FirstOrDefaultAsync(item => item.Id == id);
+
+            if(existItem == null){
                 return NotFound();
             }
 
-            return Ok(item);
+            existItem.Title = newItem.Title;
+            existItem.Description = newItem.Description;
+            existItem.Done = newItem.Done;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteItem(int id){
+            var existItem = await _context.Items.FirstOrDefaultAsync(item => item.Id == id);
+
+            if(existItem == null){
+                return NotFound();
+            }
+
+            _context.Items.Remove(existItem);
+            await _context.SaveChangesAsync();
+
+            return Ok(existItem);
         }
     }
 }
