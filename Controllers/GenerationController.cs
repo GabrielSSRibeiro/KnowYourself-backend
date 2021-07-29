@@ -16,16 +16,16 @@ namespace server.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet("index")]
         public async Task<IActionResult> GetItems(){
             var items = await _context.Generations.ToListAsync();
             
             return Ok(items);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetItem(int id){
-            var item = await _context.Generations.FirstOrDefaultAsync(item => item.Id == id);
+        [HttpGet]
+        public async Task<IActionResult> GetItem(int year){
+            var item = await _context.Generations.FirstOrDefaultAsync(generation => (year >= generation.MinYear) && (year <= generation.MaxYear));
 
             if(item == null){
                 return NotFound();
@@ -46,13 +46,9 @@ namespace server.Controllers
             return new JsonResult("Something went wrong") {StatusCode = 500};
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItem(int id, GenerationData newItem){
-            if(id != newItem.Id){
-                return BadRequest();
-            }
-
-            var existItem = await _context.Generations.FirstOrDefaultAsync(item => item.Id == id);
+        [HttpPut]
+        public async Task<IActionResult> UpdateItem(GenerationData newItem){
+            var existItem = await _context.Generations.FirstOrDefaultAsync(item => item.Name == newItem.Name);
 
             if(existItem == null){
                 return NotFound();
@@ -68,9 +64,9 @@ namespace server.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(int id){
-            var existItem = await _context.Generations.FirstOrDefaultAsync(item => item.Id == id);
+        [HttpDelete]
+        public async Task<IActionResult> DeleteItem(string name){
+            var existItem = await _context.Generations.FirstOrDefaultAsync(item => item.Name == name);
 
             if(existItem == null){
                 return NotFound();

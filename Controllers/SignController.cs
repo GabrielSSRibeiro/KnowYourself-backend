@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,16 +17,18 @@ namespace server.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet("index")]
         public async Task<IActionResult> GetItems(){
             var items = await _context.Signs.ToListAsync();
             
             return Ok(items);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetItem(int id){
-            var item = await _context.Signs.FirstOrDefaultAsync(item => item.Id == id);
+        [HttpGet]
+        public async Task<IActionResult> GetItem(int id, string month, string day){
+            DateTime birthDate = DateTime.Parse($"1000-{month}-{day}");
+
+            var item = await _context.Signs.FirstOrDefaultAsync(sign => (DateTime.Compare(birthDate, sign.MinDate) >= 0) && (DateTime.Compare(birthDate, sign.MaxDate) <= 0));
 
             if(item == null){
                 return NotFound();
@@ -36,7 +39,7 @@ namespace server.Controllers
         
         [HttpPost]
         public async Task<IActionResult> CreateItem(SignData data){
-            if(ModelState.IsValid){
+            if(ModelState.IsValid){     
                 await _context.Signs.AddAsync(data);
                 await _context.SaveChangesAsync();
 
@@ -46,13 +49,9 @@ namespace server.Controllers
             return new JsonResult("Something went wrong") {StatusCode = 500};
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItem(int id, SignData newItem){
-            if(id != newItem.Id){
-                return BadRequest();
-            }
-
-            var existItem = await _context.Signs.FirstOrDefaultAsync(item => item.Id == id);
+        [HttpPut]
+        public async Task<IActionResult> UpdateItem(SignData newItem){
+            var existItem = await _context.Signs.FirstOrDefaultAsync(item => item.Name == newItem.Name);
 
             if(existItem == null){
                 return NotFound();
@@ -70,9 +69,9 @@ namespace server.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(int id){
-            var existItem = await _context.Signs.FirstOrDefaultAsync(item => item.Id == id);
+        [HttpDelete]
+        public async Task<IActionResult> DeleteItem(string name){
+            var existItem = await _context.Signs.FirstOrDefaultAsync(item => item.Name == name);
 
             if(existItem == null){
                 return NotFound();

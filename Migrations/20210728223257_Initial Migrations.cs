@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace server.Migrations
 {
@@ -32,8 +33,8 @@ namespace server.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     FDetails = table.Column<string>(type: "TEXT", nullable: true),
                     MDetails = table.Column<string>(type: "TEXT", nullable: true),
-                    MinDate = table.Column<int>(type: "INTEGER", nullable: false),
-                    MaxDate = table.Column<int>(type: "INTEGER", nullable: false)
+                    MinDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    MaxDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
