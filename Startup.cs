@@ -29,6 +29,13 @@ namespace server
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(options => options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
+
             services.AddDbContext<ApiDbContext>(options => 
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")
@@ -54,6 +61,8 @@ namespace server
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
@@ -26,7 +27,7 @@ namespace server.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetItem(int id, string month, string day){
-            DateTime birthDate = DateTime.Parse($"1000-{month}-{day}");
+            DateTime birthDate = DateTime.Parse($"2000-{month}-{day}");
 
             var item = await _context.Signs.FirstOrDefaultAsync(sign => (DateTime.Compare(birthDate, sign.MinDate) >= 0) && (DateTime.Compare(birthDate, sign.MaxDate) <= 0));
 
