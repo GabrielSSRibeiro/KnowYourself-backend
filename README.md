@@ -2,6 +2,9 @@
   Know Yourself
 </h1> 
 
+<img width="1435" alt="home" src="https://user-images.githubusercontent.com/49738156/127787204-afd8c03c-1cff-431f-b508-4257778d4c76.png">
+<img width="1433" alt="birthDate" src="https://user-images.githubusercontent.com/49738156/127787212-abf115cb-1a7d-4c25-a82d-26a8307256bc.png">
+
 ## Technologies
 This project was developed with the following:
 - Node.js
