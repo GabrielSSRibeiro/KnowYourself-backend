@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
@@ -26,16 +25,20 @@ namespace server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetItem(int id, string month, string day){
-            DateTime birthDate = DateTime.Parse($"2000-{month}-{day}");
+        public async Task<IActionResult> GetItem(string month, string day){      
+            try {
+                DateTime birthDate = DateTime.Parse($"2000-{month}-{day}");
 
-            var item = await _context.Signs.FirstOrDefaultAsync(sign => (DateTime.Compare(birthDate, sign.MinDate) >= 0) && (DateTime.Compare(birthDate, sign.MaxDate) <= 0));
+                var item = await _context.Signs.FirstOrDefaultAsync(sign => (DateTime.Compare(birthDate, sign.MinDate) >= 0) && (DateTime.Compare(birthDate, sign.MaxDate) <= 0));
 
-            if(item == null){
-                return NotFound();
+                if(item == null){
+                    return NotFound();
+                }
+
+                return Ok(item);
+            } catch{ 
+                return new JsonResult("Something went wrong") {StatusCode = 500};
             }
-
-            return Ok(item);
         }
         
         [HttpPost]

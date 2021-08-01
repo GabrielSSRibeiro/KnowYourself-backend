@@ -10,7 +10,7 @@ namespace server.Controllers
     public class NameController : ControllerBase
     {
         [HttpGet("lookup")]
-        public async Task<String> LookupItems(string name){
+        public async Task<IActionResult> LookupItems(string name){
 
             var apiKey = "ga090080281";
             var httpClient = new HttpClient();
@@ -18,12 +18,16 @@ namespace server.Controllers
             var url = $"https://www.behindthename.com/api/lookup.json?name={name}&key={apiKey}";
             var response = await httpClient.GetAsync(url);
             var result = await response.Content.ReadAsStringAsync();
+            
+            if(result.Contains("error")){
+                return NotFound();
+            }
 
-            return result;        
+            return Ok(result);        
         }
 
         [HttpGet("related")]
-        public async Task<String> RelatedItems(string name){
+        public async Task<IActionResult> RelatedItems(string name){
 
             var apiKey = "ga090080281";
             var httpClient = new HttpClient();
@@ -32,7 +36,11 @@ namespace server.Controllers
             var response = await httpClient.GetAsync(url);
             var result = await response.Content.ReadAsStringAsync();
 
-            return result;        
+            if(result.Contains("error")){
+                return NotFound();
+            }
+
+            return Ok(result);           
         }
     }
 }
